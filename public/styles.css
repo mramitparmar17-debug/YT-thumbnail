@@ -1,0 +1,41 @@
+:root {
+  --bg: #f4f7fb;
+  --card: #ffffff;
+  --text-muted: #6c757d;
+}
+
+body {
+  background: radial-gradient(circle at top right, #eef5ff, var(--bg));
+  min-height: 100vh;
+}
+
+.dashboard-card {
+  background: var(--card);
+  border-radius: 1rem;
+}
+
+.preview-wrap {
+  width: 100%;
+  background: #f8f9fa;
+  border: 1px dashed #d1d9e6;
+  border-radius: 0.75rem;
+  min-height: 240px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.placeholder-box {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  text-align: center;
+  padding: 1rem;
+}
+
+#referencePreview,
+#outputPreview {
+  width: 100%;
+  max-height: 460px;
+  object-fit: contain;
+}
