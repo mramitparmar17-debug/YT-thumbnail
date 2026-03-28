@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>YouTube Thumbnail Generator (4K)</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell container-fluid py-4 py-lg-5">
+      <div class="container">
+        <div class="top-banner shadow-lg mb-4">
+          <div class="top-banner__inner">
+            <p class="badge-pill mb-2">4K • 16:9 • Gemini AI</p>
+            <h1 class="display-6 fw-black mb-2">YouTube Thumbnail Studio</h1>
+            <p class="mb-0 subtitle-text">
+              Bright, bold dashboard inspired by poster-style layouts — upload, prompt, generate, download.
+            </p>
+          </div>
+        </div>
+
+        <form id="thumbnailForm" class="row g-4 align-items-stretch">
+          <section class="col-12 col-xl-5">
+            <div class="control-panel h-100 shadow-lg">
+              <h2 class="section-title">Upload Reference</h2>
+              <label for="referenceImage" class="form-label">Reference Image</label>
+              <input
+                class="form-control custom-input"
+                type="file"
+                id="referenceImage"
+                name="referenceImage"
+                accept="image/*"
+                required
+              />
+              <div class="form-text text-dark">Supported: JPG, PNG, WEBP (max 10MB)</div>
+
+              <div class="preview-wrap mt-3 preview-wrap--ref">
+                <img
+                  id="referencePreview"
+                  class="img-fluid rounded d-none"
+                  alt="Reference preview"
+                />
+                <div id="referencePlaceholder" class="placeholder-box">
+                  Reference preview appears here.
+                </div>
+              </div>
+
+              <h2 class="section-title mt-4">Enter Prompt</h2>
+              <label for="prompt" class="form-label">Creative Direction</label>
+              <textarea
+                id="prompt"
+                name="prompt"
+                class="form-control custom-input"
+                rows="5"
+                placeholder="Example: cinematic thumbnail, dramatic lighting, high contrast, bold title text"
+                required
+              ></textarea>
+
+              <div class="mt-3">
+                <label for="stylePreset" class="form-label">Preset Style</label>
+                <select id="stylePreset" name="stylePreset" class="form-select custom-input">
+                  <option value="None" selected>None</option>
+                  <option value="MrBeast Style">MrBeast Style</option>
+                  <option value="Podcast Style">Podcast Style</option>
+                  <option value="Tech Review Style">Tech Review Style</option>
+                </select>
+              </div>
+
+              <div class="form-check form-switch mt-3">
+                <input class="form-check-input" type="checkbox" role="switch" id="textOverlay" name="textOverlay" checked />
+                <label class="form-check-label fw-semibold" for="textOverlay">Enable text overlay</label>
+              </div>
+
+              <div class="row g-3 mt-1">
+                <div class="col-6">
+                  <label for="brightness" class="form-label">Brightness</label>
+                  <input type="range" class="form-range" id="brightness" min="-100" max="100" value="0" />
+                  <small id="brightnessValue" class="value-chip">0</small>
+                </div>
+                <div class="col-6">
+                  <label for="contrast" class="form-label">Contrast</label>
+                  <input type="range" class="form-range" id="contrast" min="-100" max="100" value="0" />
+                  <small id="contrastValue" class="value-chip">0</small>
+                </div>
+              </div>
+
+              <div class="d-grid mt-4">
+                <button id="generateBtn" type="submit" class="btn generate-btn btn-lg">
+                  Generate Thumbnail
+                </button>
+              </div>
+
+              <div id="loading" class="d-none align-items-center gap-2 mt-3">
+                <div class="spinner-border spinner-border-sm text-dark" role="status" aria-hidden="true"></div>
+                <span class="fw-semibold">Generating 4K thumbnail...</span>
+              </div>
+
+              <div id="errorBox" class="alert alert-danger mt-3 d-none" role="alert"></div>
+            </div>
+          </section>
+
+          <section class="col-12 col-xl-7">
+            <div class="output-panel h-100 shadow-lg">
+              <h2 class="section-title">Output Preview</h2>
+              <p class="mb-3 text-dark-emphasis">AI-generated result (target 3840x2160, 16:9)</p>
+
+              <div class="preview-wrap preview-wrap--output">
+                <img
+                  id="outputPreview"
+                  class="img-fluid rounded d-none"
+                  alt="Generated thumbnail preview"
+                />
+                <div id="outputPlaceholder" class="placeholder-box">
+                  Your generated thumbnail appears here.
+                </div>
+              </div>
+
+              <div class="d-flex gap-2 mt-4 flex-wrap">
+                <button id="downloadPng" type="button" class="btn btn-dark px-4 d-none">Download PNG</button>
+                <button id="downloadJpg" type="button" class="btn btn-outline-dark px-4 d-none">Download JPG</button>
+              </div>
+            </div>
+          </section>
+        </form>
+      </div>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
