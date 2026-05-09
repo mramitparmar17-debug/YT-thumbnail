@@ -1,21 +1,24 @@
-# Install & Run Guide (Starter Layout)
+# Install and Run Guide (Step-by-Step)
 
-This repository currently includes:
-- `app-desktop/` → React + Vite + Electron starter
-- `backend-laravel/` → Laravel bootstrap skeleton (you will generate full Laravel files inside it)
+This guide explains exactly how to install and run the starter files in this repository.
+
+## Project Modules
+- `app-desktop/` → React + Vite + Electron client starter
+- `backend-laravel/` → Laravel API starter skeleton
 
 ---
 
 ## 1) Prerequisites
 
-Install these first:
-- Node.js 20+ and npm
-- PHP 8.3+
-- Composer 2+
-- MySQL 8+
-- Git
+Install before running:
+- **Node.js 20+**
+- **npm 10+**
+- **PHP 8.3+**
+- **Composer 2+**
+- **MySQL 8+**
+- **Git**
 
-Verify versions:
+Check versions:
 ```bash
 node -v
 npm -v
@@ -26,16 +29,29 @@ mysql --version
 
 ---
 
-## 2) Backend Setup (Laravel API)
+## 2) Clone and Enter Project
 
-From repository root:
+```bash
+git clone <your-repo-url>
+cd YT-thumbnail
+```
+
+---
+
+## 3) Backend Setup (Laravel 12)
+
+### 3.1 Create real Laravel app files inside `backend-laravel/`
 ```bash
 cd backend-laravel
 composer create-project laravel/laravel . "^12.0"
+```
+
+### 3.2 Configure environment
+```bash
 cp .env.example .env
 ```
 
-Edit `.env` database values:
+Update DB credentials in `.env`:
 ```env
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
@@ -43,23 +59,38 @@ DB_PORT=3306
 DB_DATABASE=paypal_recon
 DB_USERNAME=root
 DB_PASSWORD=your_password
+
+APP_URL=http://127.0.0.1:8000
+FRONTEND_URL=http://localhost:5173
+SANCTUM_STATEFUL_DOMAINS=localhost:5173,127.0.0.1:5173
+SESSION_DOMAIN=localhost
 ```
 
-Then run:
+### 3.3 Initialize Laravel
 ```bash
 php artisan key:generate
 php artisan migrate
+```
+
+### 3.4 Wire API v1 route file
+If not already wired by your app, add this in `routes/api.php`:
+```php
+require __DIR__.'/api_v1.php';
+```
+
+### 3.5 Start backend server
+```bash
 php artisan serve --host=127.0.0.1 --port=8000
 ```
 
-API will run at:
+Backend URL:
 - `http://127.0.0.1:8000`
 
 ---
 
-## 3) Frontend Setup (Browser Mode)
+## 4) Frontend Setup (Browser)
 
-Open a **new terminal** from repository root:
+Open a **new terminal** in repo root:
 ```bash
 cd app-desktop
 cp .env.example .env
@@ -67,77 +98,85 @@ npm install
 npm run dev
 ```
 
-Web app will run at:
+Frontend URL:
 - `http://localhost:5173`
 
 ---
 
-## 4) Electron Desktop Mode
+## 5) Electron Desktop Setup
 
 From `app-desktop/`:
 ```bash
 npm run electron:dev
 ```
 
-This starts Vite + Electron together.
+This runs Vite + Electron together.
 
 ---
 
-## 5) Optional Background Workers (Recommended)
+## 6) Optional Workers and Scheduler
 
-In another terminal:
+In separate terminal:
 ```bash
 cd backend-laravel
 php artisan queue:work --queue=imports,reconciliation,reports,exports
 ```
 
-Optional scheduler loop:
+Scheduler loop:
 ```bash
 php artisan schedule:work
 ```
 
 ---
 
-## 6) Quick Health Checks
+## 7) Verify It Works
 
-Backend health route (after wiring route file in Laravel routes):
+### 7.1 API Health
 ```bash
 curl http://127.0.0.1:8000/api/v1/health
 ```
-
-Expected response:
+Expected:
 ```json
 {"ok":true,"service":"paypal-recon-api"}
 ```
 
----
+### 7.2 Frontend
+Open browser:
+- `http://localhost:5173`
 
-## 7) Common Issues
-
-- **`composer: command not found`** → install Composer.
-- **DB connection error** → verify `.env` DB credentials and that MySQL is running.
-- **Port 8000 in use** → run Laravel on another port: `php artisan serve --port=8001` and update `VITE_API_BASE_URL`.
-- **Port 5173 in use** → Vite may auto-switch; check terminal output and open shown URL.
-- **Electron blank window** → ensure Vite dev server is running before Electron starts.
+### 7.3 Electron
+Electron window should open and load the same app.
 
 ---
 
-## 8) Minimum Run Order (TL;DR)
+## 8) One-Glance Run Order (TL;DR)
 
-Terminal 1:
+**Terminal 1 (API):**
 ```bash
 cd backend-laravel
 php artisan serve --host=127.0.0.1 --port=8000
 ```
 
-Terminal 2:
+**Terminal 2 (Web UI):**
 ```bash
 cd app-desktop
 npm run dev
 ```
 
-Terminal 3 (optional desktop shell):
+**Terminal 3 (Desktop shell, optional):**
 ```bash
 cd app-desktop
 npm run electron:dev
 ```
+
+---
+
+## 9) Troubleshooting
+
+- `composer: command not found` → Install Composer and reopen shell.
+- `SQLSTATE[HY000] [1045] Access denied` → Fix DB user/password and grant permissions.
+- `Connection refused` to MySQL → Start MySQL service.
+- `Address already in use: 8000` → run Laravel on another port (`--port=8001`) and update `VITE_API_BASE_URL`.
+- Vite port conflict → use displayed alternative port.
+- Electron blank screen → ensure Vite is running first.
+- 404 on `/api/v1/health` → ensure `require __DIR__.'/api_v1.php';` exists in `routes/api.php`.
